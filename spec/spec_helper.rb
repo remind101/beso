@@ -1,4 +1,14 @@
-require 'beso'
+# Set the environment variables for the test app
+ENV[ 'RAILS_ENV' ] = 'test'
+
+# Add the test app to the load path
+$: << ENV[ 'BESO_RAILS_PATH' ]
+
+# Require all dependencies
+Bundler.require
+
+# Boot the rails app
+require 'config/environment'
 
 # Helpers
 module ConstHelper
