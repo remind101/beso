@@ -48,4 +48,14 @@ describe Beso do
       it { should eq( 3.hours.ago.to_i ) }
     end
   end
+
+  describe '#job' do
+    subject { Beso }
+
+    before do
+      subject.job :foo, :table => :users
+    end
+
+    it { should have( 1 ).jobs }
+  end
 end

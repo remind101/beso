@@ -20,6 +20,14 @@ module Beso
       def start_time=( value )
         @start_time = value
       end
+
+      def job( name, options )
+        jobs << Job.new( name, options )
+      end
+
+      def jobs
+        @jobs ||= [ ]
+      end
     end
   end
 end
