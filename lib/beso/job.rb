@@ -9,7 +9,7 @@ module Beso
     end
 
     def prop( name, title=nil )
-      @props[ name.to_s ] = ( title || name.to_s.titleize )
+      @props[ name.to_sym ] = ( title || name.to_s.titleize )
     end
 
     def event_title
@@ -27,26 +27,21 @@ module Beso
         end
       EOS
 
-      model_class.instance_eval <<-EOS
+      model_class.instance_exec( @props ) do |args|
         comma do
           id          'Identity'
-          created_at  'Timestamp' do |t|
-            t.to_i
+          created_at  'Timestamp' do |m|
+            m.to_i
           end
           event_title 'Event'
-          #{custom_props}
+
+          args.each do |name, title|
+            self.send name, "Prop:#{title}"
+          end
         end
-      EOS
+      end
 
       model_class.all.to_comma
-    end
-
-    protected
-
-    def custom_props
-      @props.reduce( '' ) do |memo, (name, title)|
-        memo << "#{name} 'Prop:#{title}'\n"
-      end
     end
   end
 end
