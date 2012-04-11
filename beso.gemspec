@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "beso"
   gem.require_paths = ["lib"]
   gem.version       = Beso::VERSION
+
+  gem.add_development_dependency 'rspec', '>= 2.9.0'
 end
