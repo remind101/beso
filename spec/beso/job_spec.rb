@@ -12,6 +12,10 @@ describe Beso::Job do
   describe 'to_csv' do
     subject { Beso::Job.new :message_sent, :table => :users }
 
+    before do
+      User.destroy_all
+    end
+
     let!( :foo ){ User.create! :name => 'Foo' }
     let!( :bar ){ User.create! :name => 'Bar' }
 
