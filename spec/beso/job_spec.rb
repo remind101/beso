@@ -9,4 +9,16 @@ describe Beso::Job do
     its( :model_class ){ should eq( User ) }
   end
 
+  describe 'to_csv' do
+    subject { Beso::Job.new :message_sent, :table => :users }
+
+    let!( :user ){ User.create :name => 'Foo Bar' }
+
+    its( :to_csv ){ should eq( <<-EOS
+Identity,Timestamp,Event
+1,#{user.created_at.to_i},Message Sent
+    EOS
+    ) }
+  end
+
 end

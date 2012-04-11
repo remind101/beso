@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = Beso::VERSION
 
   gem.add_dependency 'rails', '>= 3.0.10'
+  gem.add_dependency 'comma', '>= 3.0.3'
 
   gem.add_development_dependency 'sqlite3'
   gem.add_development_dependency 'appraisal', '>= 0.4.1'

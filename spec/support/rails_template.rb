@@ -6,7 +6,11 @@ run 'rm -r vendor'
 
 # Create some models
 generate 'model', 'user name:string'
-generate 'model', 'message user_id:'
+generate 'model', 'message user_id:integer'
+
+# Set up the database
+rake 'db:migrate'
+rake 'test:prepare'
 
 # Add our gem dependency
 gem 'beso'
