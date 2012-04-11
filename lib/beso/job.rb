@@ -5,6 +5,11 @@ module Beso
     def initialize( name, options )
       @name  = name
       @table = options.delete :table
+      @props = { }
+    end
+
+    def prop( name, title=nil )
+      @props[ name.to_s ] = ( title || name.to_s.titleize )
     end
 
     def event_title
@@ -22,17 +27,26 @@ module Beso
         end
       EOS
 
-      model_class.instance_eval do
+      model_class.instance_eval <<-EOS
         comma do
           id          'Identity'
           created_at  'Timestamp' do |t|
             t.to_i
           end
           event_title 'Event'
+          #{custom_props}
         end
-      end
+      EOS
 
       model_class.all.to_comma
+    end
+
+    protected
+
+    def custom_props
+      @props.reduce( '' ) do |memo, (name, title)|
+        memo << "#{name} 'Prop:#{title}'\n"
+      end
     end
   end
 end

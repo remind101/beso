@@ -19,12 +19,40 @@ describe Beso::Job do
     let!( :foo ){ User.create! :name => 'Foo' }
     let!( :bar ){ User.create! :name => 'Bar' }
 
-    its( :to_csv ){ should eq( <<-EOS
+    context 'with the default properties' do
+      its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event
 #{foo.id},#{foo.created_at.to_i},Message Sent
 #{bar.id},#{bar.created_at.to_i},Message Sent
-    EOS
-    ) }
+      EOS
+      ) }
+    end
+
+    context 'with custom properties' do
+      before do
+        subject.prop :name
+      end
+
+      its( :to_csv ){ should eq( <<-EOS
+Identity,Timestamp,Event,Prop:Name
+#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name}
+#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name}
+      EOS
+      ) }
+    end
+
+    context 'with a custom property with a custom title' do
+      before do
+        subject.prop :name, 'Handle'
+      end
+
+      its( :to_csv ){ should eq( <<-EOS
+Identity,Timestamp,Event,Prop:Handle
+#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name}
+#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name}
+      EOS
+      ) }
+    end
   end
 
 end
