@@ -3,7 +3,7 @@ require 'comma'
 module Beso
   class Job
     def initialize( name, options )
-      @name  = name
+      @name  = name.to_sym
       @table = options.delete :table
       @props = { }
     end
@@ -23,8 +23,8 @@ module Beso
         end
       EOS
 
-      model_class.instance_exec( @props ) do |props|
-        comma do
+      model_class.instance_exec( @name, @props ) do |name, props|
+        comma name do
           id          'Identity'
           created_at  'Timestamp' do |m|
             m.to_i
@@ -37,7 +37,7 @@ module Beso
         end
       end
 
-      model_class.all.to_comma
+      model_class.all.to_comma @name
     end
 
     protected
