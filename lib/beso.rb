@@ -1,5 +1,7 @@
-require "beso/version"
+require 'beso/version'
 
 module Beso
-  # Your code goes here...
+  autoload :Railtie, 'beso/railtie'
 end
+
+require 'beso/railtie' if defined?(Rails)
