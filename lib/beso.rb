@@ -1,13 +1,10 @@
 require 'beso/version'
 
 module Beso
+  autoload :Config,  'beso/config'
   autoload :Railtie, 'beso/railtie'
 
-  class << self
-    def configure
-      yield self
-    end
-  end
+  include Config
 end
 
 require 'beso/railtie' if defined?(Rails)
