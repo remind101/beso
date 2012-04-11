@@ -1,6 +1,3 @@
-require 'active_support/concern'
-require 'active_support/core_ext/numeric'
-
 module Beso
   module Config
     extend ActiveSupport::Concern
