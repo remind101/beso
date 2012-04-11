@@ -4,9 +4,9 @@ require File.expand_path('../lib/beso/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Jeremy Ruppel"]
   gem.email         = ["jeremy.ruppel@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Sync your KISSmetrics history, guapo!}
+  gem.summary       = %q{Sync your KISSmetrics history, guapo!}
+  gem.homepage      = "https://github.com/remind101/beso"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
