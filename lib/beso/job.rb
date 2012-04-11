@@ -16,16 +16,6 @@ module Beso
       @props[ sym.to_sym ] = [ args, block ]
     end
 
-    # TODO make protected
-    def event_title
-      @name.to_s.titleize
-    end
-
-    # TODO make protected
-    def model_class
-      @table.to_s.classify.constantize
-    end
-
     def to_csv
       model_class.class_eval <<-EOS
         def event_title
@@ -48,6 +38,16 @@ module Beso
       end
 
       model_class.all.to_comma
+    end
+
+    protected
+
+    def event_title
+      @name.to_s.titleize
+    end
+
+    def model_class
+      @table.to_s.classify.constantize
     end
   end
 end
