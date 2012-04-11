@@ -28,7 +28,7 @@ Identity,Timestamp,Event
       ) }
     end
 
-    context 'with custom properties' do
+    context 'with a custom property' do
       before do
         subject.prop :name
       end
@@ -52,6 +52,36 @@ Identity,Timestamp,Event,Prop:Handle
 #{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name}
       EOS
       ) }
+    end
+
+    context 'with a custom property and a block' do
+      before do
+        subject.prop :name do |name|
+          name.length
+        end
+      end
+
+      its( :to_csv ){ should eq( <<-EOS
+Identity,Timestamp,Event,Prop:Name
+#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name.length}
+#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name.length}
+      EOS
+      )}
+    end
+
+    context 'with a custom property with a custom title and a block' do
+      before do
+        subject.prop :name, 'Name Length' do |name|
+          name.length
+        end
+      end
+
+      its( :to_csv ){ should eq( <<-EOS
+Identity,Timestamp,Event,Prop:Name Length
+#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name.length}
+#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name.length}
+      EOS
+      )}
     end
   end
 

@@ -8,14 +8,20 @@ module Beso
       @props = { }
     end
 
-    def prop( name, title=nil )
-      @props[ name.to_sym ] = "Prop:#{title || name.to_s.titleize}"
+    def prop( sym, *args, &block )
+      # TODO this is weak, find a better way
+      # to do what you mean to do
+      args[ 0 ] = "Prop:#{args[ 0 ] || sym.to_s.titleize}"
+
+      @props[ sym.to_sym ] = [ args, block ]
     end
 
+    # TODO make protected
     def event_title
       @name.to_s.titleize
     end
 
+    # TODO make protected
     def model_class
       @table.to_s.classify.constantize
     end
@@ -35,8 +41,8 @@ module Beso
           end
           event_title 'Event'
 
-          props.each do |name, title|
-            self.send name, title
+          props.each do |sym, (args, block)|
+            self.send sym, *args, &block
           end
         end
       end
