@@ -17,11 +17,9 @@ module Beso
     end
 
     def to_csv
-      model_class.class_eval <<-EOS
-        def event_title
-          "#{event_title}"
-        end
-      EOS
+      model_class.class_exec( event_title ) do |event|
+        define_method( :event_title ) { event }
+      end
 
       model_class.instance_exec( @name, @props ) do |name, props|
         comma name do
