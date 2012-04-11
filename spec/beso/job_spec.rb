@@ -12,11 +12,13 @@ describe Beso::Job do
   describe 'to_csv' do
     subject { Beso::Job.new :message_sent, :table => :users }
 
-    let!( :user ){ User.create :name => 'Foo Bar' }
+    let!( :foo ){ User.create! :name => 'Foo' }
+    let!( :bar ){ User.create! :name => 'Bar' }
 
     its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event
-1,#{user.created_at.to_i},Message Sent
+#{foo.id},#{foo.created_at.to_i},Message Sent
+#{bar.id},#{bar.created_at.to_i},Message Sent
     EOS
     ) }
   end
