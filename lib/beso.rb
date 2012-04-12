@@ -1,7 +1,6 @@
 require 'beso/version'
 
 module Beso
-  autoload :AWS,        'beso/aws'
   autoload :Config,     'beso/config'
   autoload :Connection, 'beso/connection'
   autoload :CSV,        'beso/csv'

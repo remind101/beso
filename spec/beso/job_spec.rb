@@ -240,4 +240,32 @@ Identity,Timestamp,Event
       end
     end
   end
+
+  describe '#last_timestamp' do
+    let!( :foo ){ User.create :name => 'Foo', :created_at => 100, :updated_at => 301 }
+    let!( :bar ){ User.create :name => 'Bar', :created_at => 200, :updated_at => 200 }
+    let!( :baz ){ User.create :name => 'Baz', :created_at => 300, :updated_at => 300 }
+
+    subject { Beso::Job.new :message_sent, :table => :users }
+
+    before do
+      subject.identity :id
+    end
+
+    context 'with the timestamp keyed on `created_at`' do
+      before do
+        subject.timestamp :created_at
+      end
+
+      its( :last_timestamp ){ should eq( 300 ) }
+    end
+
+    context 'with the timestamp keyed on `updated_at`' do
+      before do
+        subject.timestamp :updated_at
+      end
+
+      its( :last_timestamp ){ should eq( 301 ) }
+    end
+  end
 end

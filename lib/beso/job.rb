@@ -38,6 +38,10 @@ module Beso
       end
     end
 
+    def last_timestamp
+      model_class.maximum @timestamp
+    end
+
     protected
 
     def required_headers

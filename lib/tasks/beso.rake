@@ -5,26 +5,20 @@ namespace :beso do
 
     raise 'Beso has no jobs to run. Please define some in the beso initializer.' if Beso.jobs.empty?
 
-    puts '*' * 50
-    puts 'BESAME!'
+    Beso.connect do |bucket|
 
-    puts 'Connecting...'
+      config = YAML.load( bucket.read 'beso.yml' ) || { }
 
-    Beso.connect do |jobs|
-      puts self.inspect
+      Beso.jobs.each do |job|
+
+        csv = job.to_csv :since => config[ job.event ]
+
+        config[ job.event ] = job.last_timestamp
+
+        bucket.write "#{job.event}-#{config[ job.event ]}.csv", csv
+      end
+
+      bucket.write 'beso.yml', config.to_yaml
     end
-
-    # Beso.connect do |jobs|
-    #
-    #       if not beso_config.exist?
-    #         beso_config.create!
-    #       end
-    #
-    #       jobs.each do |job|
-    #         puts "==> #{job.event.inspect}"
-    #         puts job.to_csv
-    #         puts
-    #       end
-    #     end
   end
 end

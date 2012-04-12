@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Beso::AWS do
+describe Beso::Connection::AWS do
 
   context 'without an access key' do
     it 'should raise an error' do
