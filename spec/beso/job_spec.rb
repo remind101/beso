@@ -78,12 +78,13 @@ Identity,Timestamp,Event,Prop:Foo
       before do
         subject.identity :id
         subject.timestamp :created_at
+        subject.prop :name
       end
 
       its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event
-#{foo.id},#{foo.created_at.to_i},Message Sent
-#{bar.id},#{bar.created_at.to_i},Message Sent
+Identity,Timestamp,Event,Prop:Name
+#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name}
+#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name}
       EOS
       ) }
     end

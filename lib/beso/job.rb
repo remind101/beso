@@ -18,7 +18,7 @@ module Beso
 
     def prop( name, value=nil, &block )
       raise TooManyPropertiesError if @props.length == 10
-      @props[ name.to_sym ] = value || block
+      @props[ name.to_sym ] = value || block || name.to_sym
     end
 
     def to_csv( options={} )
