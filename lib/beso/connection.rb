@@ -16,7 +16,7 @@ module Beso
       end
 
       def read( filename )
-        get( filename ).try( :read ) || ''
+        get( filename ).try( :body ) || ''
       end
 
       def write( filename, body )

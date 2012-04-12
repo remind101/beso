@@ -20,15 +20,21 @@ namespace :beso do
 
         puts "==> Processing job: #{job.event.inspect} since #{config[ job.event ]}"
 
+        config[ job.event ] ||= job.first_timestamp
+
         csv = job.to_csv :since => config[ job.event ]
 
-        bucket.write "#{job.event}-#{config[ job.event ].to_i}.csv", csv
+        if csv
+          bucket.write "#{job.event}-#{config[ job.event ].to_i}.csv", csv
 
-        puts " ==> #{job.event}-#{config[ job.event ].to_i}.csv saved to S3"
+          puts " ==> #{job.event}-#{config[ job.event ].to_i}.csv saved to S3"
 
-        config[ job.event ] = job.last_timestamp
+          config[ job.event ] = job.last_timestamp
 
-        puts " ==> New timestamp is #{config[ job.event ]}"
+          puts " ==> New timestamp is #{config[ job.event ]}"
+        else
+          puts " ==> No records found. Skipping..."
+        end
       end
 
       bucket.write 'beso.yml', config.to_yaml
