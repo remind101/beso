@@ -18,11 +18,11 @@ module Beso
       @props[ name.to_sym ] = block
     end
 
-    def to_csv
+    def to_csv( options={} )
       raise MissingIdentityError  if @identity.nil?
       raise MissingTimestampError if @timestamp.nil?
 
-      Beso::CSV.generate do |csv|
+      Beso::CSV.generate( options ) do |csv|
         csv << ( required_headers + custom_headers )
 
         model_class.all.each do |model|
