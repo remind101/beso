@@ -3,6 +3,7 @@ module Beso
     def initialize( event, options )
       @event = event.to_sym
       @table = options.delete :table
+      @since = options.delete :since
       @props = { }
       @extra = options
     end
@@ -29,7 +30,7 @@ module Beso
       Beso::CSV.generate( @extra.merge( options ) ) do |csv|
         csv << ( required_headers + custom_headers )
 
-        model_class.all.each do |model|
+        model_class.where( "#{@timestamp} > ?", @since || 0 ).each do |model|
           csv << ( required_columns( model ) + custom_columns( model ) )
         end
       end
