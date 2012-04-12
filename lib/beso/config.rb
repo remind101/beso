@@ -16,22 +16,6 @@ module Beso
       mattr_accessor :bucket_name
       mattr_accessor :aws_region
 
-      def start_time
-        if @@start_time
-          @@start_time
-        elsif defined? BESO_START_TIME
-          BESO_START_TIME.to_i
-        elsif Beso.jobs.any?
-          @@start_time = ( Beso.jobs.count ).hours.ago.to_i
-        else
-          @@start_time = 1.hour.ago.to_i
-        end
-      end
-
-      def start_time=( value )
-        @@start_time = value
-      end
-
       def job( name, options, &block )
         job = Job.new( name, options )
         job.instance_eval &block if block_given?
@@ -44,7 +28,6 @@ module Beso
 
       def reset!
         @@jobs        = [ ]
-        @@start_time  = nil
         @@access_key  = nil
         @@secret_key  = nil
         @@bucket_name = nil

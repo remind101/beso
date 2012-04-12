@@ -13,55 +13,6 @@ describe Beso do
     end
   end
 
-  describe '#start_time' do
-    before do
-      Beso.start_time = nil
-    end
-
-    subject { Beso.start_time }
-
-    context 'when not set' do
-      it { should eq( 1.hour.ago.to_i ) }
-    end
-
-    context 'when jobs have been defined' do
-      it 'should be 1 hour per job' do
-        [ :foo, :bar, :baz ].each do |name|
-          Beso.job name, :table => :users do
-            identity { |user| user.id }
-            timestamp :created_at
-          end
-        end
-
-        Beso.start_time.should eq( 3.hours.ago.to_i )
-      end
-    end
-
-    context 'when ENV["BESO_START_TIME"] is set' do
-      around do |example|
-        with_const( :BESO_START_TIME, 2.hours.ago.to_i ) do
-          example.run
-        end
-      end
-
-      it { should eq( 2.hours.ago.to_i ) }
-    end
-
-    context 'when explicitly set in the config' do
-      around do |example|
-        with_const( :BESO_START_TIME, 2.hours.ago.to_i ) do
-          example.run
-        end
-      end
-
-      before do
-        Beso.start_time = 3.hours.ago.to_i
-      end
-
-      it { should eq( 3.hours.ago.to_i ) }
-    end
-  end
-
   describe '#job' do
     subject { Beso }
 
@@ -84,14 +35,6 @@ describe Beso do
       Beso.jobs << 123
       Beso.reset!
       Beso.jobs.should be_empty
-    end
-
-    it 'should reset the #start_time' do
-      original = Beso.start_time.to_i
-      Beso.start_time = 3.weeks.ago.to_i
-      Beso.start_time.should_not eq( original )
-      Beso.reset!
-      Beso.start_time.should eq( original )
     end
 
     it 'should reset the #access_key' do
