@@ -11,18 +11,21 @@ module Beso
         yield self
       end
 
+      mattr_accessor :access_key
+      mattr_accessor :secret_key
+
       def start_time
-        if @start_time
-          @start_time
+        if @@start_time
+          @@start_time
         elsif defined? BESO_START_TIME
           BESO_START_TIME.to_i
         else
-          @start_time = 1.hour.ago.to_i
+          @@start_time = 1.hour.ago.to_i
         end
       end
 
       def start_time=( value )
-        @start_time = value
+        @@start_time = value
       end
 
       def job( name, options, &block )
@@ -32,12 +35,14 @@ module Beso
       end
 
       def jobs
-        @jobs ||= [ ]
+        @@jobs ||= [ ]
       end
 
       def reset!
-        @jobs       = [ ]
-        @start_time = nil
+        @@jobs       = [ ]
+        @@start_time = nil
+        @@access_key = nil
+        @@secret_key = nil
       end
     end
   end

@@ -80,5 +80,29 @@ describe Beso do
       Beso.reset!
       Beso.start_time.should eq( original )
     end
+
+    it 'should reset the #access_key' do
+      Beso.access_key = 'foo'
+      Beso.reset!
+      Beso.access_key.should be_nil
+    end
+
+    it 'should reset the #secret_key' do
+      Beso.secret_key = 'foo'
+      Beso.reset!
+      Beso.secret_key.should be_nil
+    end
+  end
+
+  describe '#access_key' do
+    subject { Beso }
+    it { should respond_to( :access_key ) }
+    its( :access_key ){ should be_nil }
+  end
+
+  describe '#secret_key' do
+    subject { Beso }
+    it { should respond_to( :secret_key ) }
+    its( :secret_key ){ should be_nil }
   end
 end
