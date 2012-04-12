@@ -164,36 +164,80 @@ Identity;Timestamp;Event
     let!( :bar ){ User.create :name => 'Bar', :created_at => 200, :updated_at => 200 }
     let!( :baz ){ User.create :name => 'Baz', :created_at => 300, :updated_at => 300 }
 
-    context 'and the timestamp keyed on `created_at`' do
-      subject { Beso::Job.new :message_sent, :table => :users, :since => 101 }
+    context 'in the constructor' do
+      context 'and the timestamp keyed on `created_at`' do
+        subject { Beso::Job.new :message_sent, :table => :users, :since => 101 }
 
-      before do
-        subject.identity { |user| user.id }
-        subject.timestamp :created_at
-      end
+        before do
+          subject.identity { |user| user.id }
+          subject.timestamp :created_at
+        end
 
-      its( :to_csv ){ should eq( <<-EOS
+        its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event
 #{bar.id},#{bar.created_at.to_i},Message Sent
 #{baz.id},#{baz.created_at.to_i},Message Sent
-      EOS
-      ) }
+        EOS
+        ) }
+      end
     end
 
-    context 'and the timestamp keyed on `updated_at`' do
-      subject { Beso::Job.new :message_sent, :table => :users, :since => 201 }
+    context 'in to_csv' do
+      context 'and the timestamp keyed on `created_at`' do
+        subject { Beso::Job.new :message_sent, :table => :users }
 
-      before do
-        subject.identity { |user| user.id }
-        subject.timestamp :updated_at
+        before do
+          subject.identity { |user| user.id }
+          subject.timestamp :created_at
+        end
+
+        it 'should find records after `since`' do
+          subject.to_csv( :since => 101 ).should eq( <<-EOS
+Identity,Timestamp,Event
+#{bar.id},#{bar.created_at.to_i},Message Sent
+#{baz.id},#{baz.created_at.to_i},Message Sent
+          EOS
+          )
+        end
       end
+    end
 
-      its( :to_csv ){ should eq( <<-EOS
+    context 'in the constructor' do
+      context 'and the timestamp keyed on `updated_at`' do
+        subject { Beso::Job.new :message_sent, :table => :users, :since => 201 }
+
+        before do
+          subject.identity { |user| user.id }
+          subject.timestamp :updated_at
+        end
+
+        its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event
 #{foo.id},#{foo.updated_at.to_i},Message Sent
 #{baz.id},#{baz.updated_at.to_i},Message Sent
-      EOS
-      ) }
+        EOS
+        ) }
+      end
+    end
+
+    context 'in to_csv' do
+      context 'and the timestamp keyed on `updated_at`' do
+        subject { Beso::Job.new :message_sent, :table => :users }
+
+        before do
+          subject.identity { |user| user.id }
+          subject.timestamp :updated_at
+        end
+
+        it 'should find records after `since`' do
+          subject.to_csv( :since => 201 ).should eq( <<-EOS
+Identity,Timestamp,Event
+#{foo.id},#{foo.updated_at.to_i},Message Sent
+#{baz.id},#{baz.updated_at.to_i},Message Sent
+          EOS
+          )
+        end
+      end
     end
   end
 end

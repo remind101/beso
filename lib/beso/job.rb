@@ -27,6 +27,8 @@ module Beso
       raise MissingIdentityError  if @identity.nil?
       raise MissingTimestampError if @timestamp.nil?
 
+      @since ||= options.delete :since
+
       Beso::CSV.generate( @extra.merge( options ) ) do |csv|
         csv << ( required_headers + custom_headers )
 
