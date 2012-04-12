@@ -28,4 +28,8 @@ RSpec.configure do |config|
   config.formatter = :documentation
   # Include helpers
   config.include ConstHelper
+  # Reset Beso after each test
+  config.after :each do
+    Beso.reset!
+  end
 end
