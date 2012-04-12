@@ -6,16 +6,16 @@ module Beso
       @props = { }
     end
 
-    def identity( &block )
-      @identity = block
+    def identity( value=nil, &block )
+      @identity = value || block
     end
 
-    def timestamp( &block )
-      @timestamp = block
+    def timestamp( value=nil, &block )
+      @timestamp = value || block
     end
 
-    def prop( name, &block )
-      @props[ name.to_sym ] = block
+    def prop( name, value=nil, &block )
+      @props[ name.to_sym ] = value || block
     end
 
     def to_csv( options={} )
@@ -43,14 +43,14 @@ module Beso
 
     def required_columns( model )
       [ ].tap do |row|
-        row << @identity.call( model )
-        row << @timestamp.call( model ).to_i
+        row << block_or_value( @identity,  model )
+        row << block_or_value( @timestamp, model ).to_i
         row << event_title
       end
     end
 
     def custom_columns( model )
-      @props.values.map { |block| block.call( model ) }
+      @props.values.map { |value| block_or_value( value, model ) }
     end
 
     def event_title
@@ -59,6 +59,10 @@ module Beso
 
     def model_class
       @table.to_s.classify.constantize
+    end
+
+    def block_or_value( value, model )
+      value.respond_to?( :call ) ? value.call( model ) : value
     end
   end
 end

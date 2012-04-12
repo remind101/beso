@@ -59,6 +59,21 @@ Identity,Timestamp,Event,Prop:User Name
       ) }
     end
 
+    context 'with literal properties defined' do
+      before do
+        subject.identity 22
+        subject.timestamp 1234
+        subject.prop :foo, 'bar'
+      end
+
+      its( :to_csv ){ should eq( <<-EOS
+Identity,Timestamp,Event,Prop:Foo
+22,1234,Message Sent,bar
+22,1234,Message Sent,bar
+      EOS
+      ) }
+    end
+
     context 'with custom options' do
       before do
         subject.identity { |user| user.id }
