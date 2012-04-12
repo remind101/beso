@@ -17,6 +17,7 @@ module Beso
     end
 
     def prop( name, value=nil, &block )
+      raise TooManyPropertiesError if @props.length == 10
       @props[ name.to_sym ] = value || block
     end
 

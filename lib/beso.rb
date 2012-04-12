@@ -14,6 +14,7 @@ module Beso
   class MissingTimestampError < BesoError; end
   class MissingAccessKeyError < BesoError; end
   class MissingSecretKeyError < BesoError; end
+  class TooManyPropertiesError < BesoError; end
 end
 
 require 'beso/railtie' if defined?(Rails)

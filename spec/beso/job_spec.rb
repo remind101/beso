@@ -74,6 +74,37 @@ Identity,Timestamp,Event,Prop:Foo
       ) }
     end
 
+    context 'with 10 custom properties defined' do
+      before do
+        subject.identity 22
+        subject.timestamp 1234
+        (1..10).each do |i|
+          subject.prop :"foo #{i}", i
+        end
+      end
+
+      its( :to_csv ){ should eq( <<-EOS
+Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,Prop:Foo 6,Prop:Foo 7,Prop:Foo 8,Prop:Foo 9,Prop:Foo 10
+22,1234,Message Sent,1,2,3,4,5,6,7,8,9,10
+22,1234,Message Sent,1,2,3,4,5,6,7,8,9,10
+      EOS
+      ) }
+    end
+
+    context 'with more than 10 custom properties defined' do
+      before do
+        subject.identity 22
+        subject.timestamp 1234
+      end
+      it 'should raise an error' do
+        expect {
+          (1..11).each do |i|
+            subject.prop :"foo #{i}", i
+          end
+        }.to raise_error Beso::TooManyPropertiesError
+      end
+    end
+
     context 'with custom options given to #to_csv' do
       before do
         subject.identity { |user| user.id }
