@@ -13,6 +13,8 @@ module Beso
 
       mattr_accessor :access_key
       mattr_accessor :secret_key
+      mattr_accessor :bucket_name
+      mattr_accessor :aws_region
 
       def start_time
         if @@start_time
@@ -41,10 +43,12 @@ module Beso
       end
 
       def reset!
-        @@jobs       = [ ]
-        @@start_time = nil
-        @@access_key = nil
-        @@secret_key = nil
+        @@jobs        = [ ]
+        @@start_time  = nil
+        @@access_key  = nil
+        @@secret_key  = nil
+        @@bucket_name = nil
+        @@aws_region  = nil
       end
     end
   end

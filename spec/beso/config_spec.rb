@@ -105,6 +105,18 @@ describe Beso do
       Beso.reset!
       Beso.secret_key.should be_nil
     end
+
+    it 'should reset the #bucket_name' do
+      Beso.bucket_name = 'beso'
+      Beso.reset!
+      Beso.bucket_name.should be_nil
+    end
+
+    it 'should reset the #aws_region' do
+      Beso.aws_region = 'us-east-1'
+      Beso.reset!
+      Beso.aws_region.should be_nil
+    end
   end
 
   describe '#access_key' do
@@ -117,5 +129,17 @@ describe Beso do
     subject { Beso }
     it { should respond_to( :secret_key ) }
     its( :secret_key ){ should be_nil }
+  end
+
+  describe '#bucket_name' do
+    subject { Beso }
+    it { should respond_to( :bucket_name ) }
+    its( :bucket_name ){ should be_nil}
+  end
+
+  describe '#aws_region' do
+    subject { Beso }
+    it { should respond_to( :aws_region ) }
+    its( :aws_region ){ should be_nil }
   end
 end
