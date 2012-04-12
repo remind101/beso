@@ -15,6 +15,7 @@ module Beso
   class MissingIdentityError < BesoError; end
   class MissingTimestampError < BesoError; end
   class MissingAccessKeyError < BesoError; end
+  class InvalidTimestampError < BesoError; end
   class MissingSecretKeyError < BesoError; end
   class MissingBucketNameError < BesoError; end
   class TooManyPropertiesError < BesoError; end

@@ -29,7 +29,7 @@ describe Beso do
         [ :foo, :bar, :baz ].each do |name|
           Beso.job name, :table => :users do
             identity { |user| user.id }
-            timestamp { |user| user.created_at }
+            timestamp :created_at
           end
         end
 

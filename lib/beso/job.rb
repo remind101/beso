@@ -12,8 +12,9 @@ module Beso
       @identity = value || block
     end
 
-    def timestamp( value=nil, &block )
-      @timestamp = value || block
+    def timestamp( value )
+      raise InvalidTimestampError unless value.is_a?(Symbol)
+      @timestamp = value
     end
 
     def prop( name, value=nil, &block )
@@ -47,7 +48,7 @@ module Beso
     def required_columns( model )
       [ ].tap do |row|
         row << block_or_value( @identity,  model )
-        row << block_or_value( @timestamp, model ).to_i
+        row << model.send( @timestamp ).to_i
         row << event_title
       end
     end

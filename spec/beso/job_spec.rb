@@ -14,7 +14,7 @@ describe Beso::Job do
 
     context 'without an identity defined' do
       before do
-        subject.timestamp { |user| user.created_at }
+        subject.timestamp :created_at
       end
       it 'should raise an error' do
         expect { subject.to_csv }.to raise_error( Beso::MissingIdentityError )
@@ -30,10 +30,16 @@ describe Beso::Job do
       end
     end
 
+    context 'with a timestamp that is not a symbol' do
+      it 'should raise an error' do
+        expect { subject.timestamp 123 }.to raise_error( Beso::InvalidTimestampError )
+      end
+    end
+
     context 'with only the mandatory columns defined' do
       before do
         subject.identity { |user| user.id }
-        subject.timestamp { |user| user.created_at }
+        subject.timestamp :created_at
       end
 
       its( :to_csv ){ should eq( <<-EOS
@@ -47,7 +53,7 @@ Identity,Timestamp,Event
     context 'with custom properties defined' do
       before do
         subject.identity { |user| user.id }
-        subject.timestamp { |user| user.created_at }
+        subject.timestamp :created_at
         subject.prop( :user_name ){ |user| user.name }
       end
 
@@ -62,14 +68,14 @@ Identity,Timestamp,Event,Prop:User Name
     context 'with literal properties defined' do
       before do
         subject.identity 22
-        subject.timestamp 1234
+        subject.timestamp :created_at
         subject.prop :foo, 'bar'
       end
 
       its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event,Prop:Foo
-22,1234,Message Sent,bar
-22,1234,Message Sent,bar
+22,#{foo.created_at.to_i},Message Sent,bar
+22,#{bar.created_at.to_i},Message Sent,bar
       EOS
       ) }
     end
@@ -92,7 +98,7 @@ Identity,Timestamp,Event,Prop:Name
     context 'with 10 custom properties defined' do
       before do
         subject.identity 22
-        subject.timestamp 1234
+        subject.timestamp :created_at
         (1..10).each do |i|
           subject.prop :"foo #{i}", i
         end
@@ -100,8 +106,8 @@ Identity,Timestamp,Event,Prop:Name
 
       its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,Prop:Foo 6,Prop:Foo 7,Prop:Foo 8,Prop:Foo 9,Prop:Foo 10
-22,1234,Message Sent,1,2,3,4,5,6,7,8,9,10
-22,1234,Message Sent,1,2,3,4,5,6,7,8,9,10
+22,#{foo.created_at.to_i},Message Sent,1,2,3,4,5,6,7,8,9,10
+22,#{bar.created_at.to_i},Message Sent,1,2,3,4,5,6,7,8,9,10
       EOS
       ) }
     end
@@ -109,7 +115,7 @@ Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,
     context 'with more than 10 custom properties defined' do
       before do
         subject.identity 22
-        subject.timestamp 1234
+        subject.timestamp :created_at
       end
       it 'should raise an error' do
         expect {
@@ -123,7 +129,7 @@ Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,
     context 'with custom options given to #to_csv' do
       before do
         subject.identity { |user| user.id }
-        subject.timestamp { |user| user.created_at }
+        subject.timestamp :created_at
       end
 
       it 'should support all options that CSV supports' do
@@ -141,7 +147,7 @@ Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,
 
       before do
         subject.identity { |user| user.id }
-        subject.timestamp { |user| user.created_at }
+        subject.timestamp :created_at
       end
 
       its( :to_csv ){ should eq( <<-EOS
