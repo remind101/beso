@@ -5,14 +5,37 @@ describe Beso::Job do
   describe 'to_csv' do
     subject { Beso::Job.new :message_sent, :table => :users }
 
-    before do
+    after do
       User.destroy_all
     end
 
     let!( :foo ){ User.create! :name => 'Foo' }
     let!( :bar ){ User.create! :name => 'Bar' }
 
-    context 'with the default properties' do
+    context 'without an identity defined' do
+      before do
+        subject.timestamp { |user| user.created_at }
+      end
+      it 'should raise an error' do
+        expect { subject.to_csv }.to raise_error( Beso::MissingIdentityError )
+      end
+    end
+
+    context 'without a timestamp defined' do
+      before do
+        subject.identity { |user| user.id }
+      end
+      it 'should raise an error' do
+        expect { subject.to_csv }.to raise_error( Beso::MissingTimestampError )
+      end
+    end
+
+    context 'with only the mandatory columns defined' do
+      before do
+        subject.identity { |user| user.id }
+        subject.timestamp { |user| user.created_at }
+      end
+
       its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event
 #{foo.id},#{foo.created_at.to_i},Message Sent
@@ -21,61 +44,5 @@ Identity,Timestamp,Event
       ) }
     end
 
-    context 'with a custom property' do
-      before do
-        subject.prop :name
-      end
-
-      its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event,Prop:Name
-#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name}
-#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name}
-      EOS
-      ) }
-    end
-
-    context 'with a custom property with a custom title' do
-      before do
-        subject.prop :name, 'Handle'
-      end
-
-      its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event,Prop:Handle
-#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name}
-#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name}
-      EOS
-      ) }
-    end
-
-    context 'with a custom property and a block' do
-      before do
-        subject.prop :name do |name|
-          name.length
-        end
-      end
-
-      its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event,Prop:Name
-#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name.length}
-#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name.length}
-      EOS
-      ) }
-    end
-
-    context 'with a custom property with a custom title and a block' do
-      before do
-        subject.prop :name, 'Name Length' do |name|
-          name.length
-        end
-      end
-
-      its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event,Prop:Name Length
-#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name.length}
-#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name.length}
-      EOS
-      ) }
-    end
   end
-
 end
