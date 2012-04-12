@@ -25,9 +25,11 @@ namespace :beso do
         csv = job.to_csv :since => config[ job.event ]
 
         if csv
-          bucket.write "#{job.event}-#{config[ job.event ].to_i}.csv", csv
+          filename = "beso-#{job.event}-#{config[ job.event ].to_i}.csv"
 
-          puts " ==> #{job.event}-#{config[ job.event ].to_i}.csv saved to S3"
+          bucket.write filename, csv
+
+          puts " ==> #{filename} saved to S3"
 
           config[ job.event ] = job.last_timestamp
 
