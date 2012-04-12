@@ -7,6 +7,7 @@ module Beso
       @table = options.delete :table
       @props = { }
     end
+    attr_reader :name
 
     def prop( sym, *args, &block )
       # TODO this is weak, find a better way
@@ -21,7 +22,7 @@ module Beso
         define_method( :event_title ) { event }
       end
 
-      model_class.instance_exec( @name, @props ) do |name, props|
+      model_class.instance_exec( name, @props ) do |name, props|
         comma name do
           id          'Identity'
           created_at  'Timestamp' do |m|
