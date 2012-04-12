@@ -62,4 +62,23 @@ describe Beso do
 
     it { should have( 1 ).jobs }
   end
+
+  describe '#reset' do
+    subject { Beso }
+    it { should respond_to( :reset! ) }
+
+    it 'should reset the #jobs array' do
+      Beso.jobs << 123
+      Beso.reset!
+      Beso.jobs.should be_empty
+    end
+
+    it 'should reset the #start_time' do
+      original = Beso.start_time.to_i
+      Beso.start_time = 3.weeks.ago.to_i
+      Beso.start_time.should_not eq( original )
+      Beso.reset!
+      Beso.start_time.should eq( original )
+    end
+  end
 end

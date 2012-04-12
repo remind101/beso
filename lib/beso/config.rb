@@ -2,6 +2,10 @@ module Beso
   module Config
     extend ActiveSupport::Concern
 
+    included do
+      reset!
+    end
+
     module ClassMethods
       def configure
         yield self
@@ -29,6 +33,11 @@ module Beso
 
       def jobs
         @jobs ||= [ ]
+      end
+
+      def reset!
+        @jobs       = [ ]
+        @start_time = nil
       end
     end
   end
