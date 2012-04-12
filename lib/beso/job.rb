@@ -14,15 +14,19 @@ module Beso
       @timestamp = block
     end
 
+    def prop( name, &block )
+      @props[ name.to_sym ] = block
+    end
+
     def to_csv
       raise MissingIdentityError  if @identity.nil?
       raise MissingTimestampError if @timestamp.nil?
 
       Beso::CSV.generate do |csv|
-        csv << ( required_headers )
+        csv << ( required_headers + custom_headers )
 
         model_class.all.each do |model|
-          csv << ( required_columns( model ) )
+          csv << ( required_columns( model ) + custom_columns( model ) )
         end
       end
     end
@@ -33,12 +37,20 @@ module Beso
       %w| Identity Timestamp Event |
     end
 
+    def custom_headers
+      @props.keys.map { |name| "Prop:#{name.to_s.titleize}" }
+    end
+
     def required_columns( model )
       [ ].tap do |row|
         row << @identity.call( model )
         row << @timestamp.call( model ).to_i
         row << event_title
       end
+    end
+
+    def custom_columns( model )
+      @props.values.map { |block| block.call( model ) }
     end
 
     def event_title
