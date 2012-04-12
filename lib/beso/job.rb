@@ -4,6 +4,7 @@ module Beso
       @event = event.to_sym
       @table = options.delete :table
       @props = { }
+      @extra = options
     end
 
     def identity( value=nil, &block )
@@ -22,7 +23,7 @@ module Beso
       raise MissingIdentityError  if @identity.nil?
       raise MissingTimestampError if @timestamp.nil?
 
-      Beso::CSV.generate( options ) do |csv|
+      Beso::CSV.generate( @extra.merge( options ) ) do |csv|
         csv << ( required_headers + custom_headers )
 
         model_class.all.each do |model|

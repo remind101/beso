@@ -74,7 +74,7 @@ Identity,Timestamp,Event,Prop:Foo
       ) }
     end
 
-    context 'with custom options' do
+    context 'with custom options given to #to_csv' do
       before do
         subject.identity { |user| user.id }
         subject.timestamp { |user| user.created_at }
@@ -88,6 +88,22 @@ Identity,Timestamp,Event,Prop:Foo
         EOS
         )
       end
+    end
+
+    context 'with custom options given to constructor' do
+      subject { Beso::Job.new :message_sent, :table => :users, :col_sep => ';' }
+
+      before do
+        subject.identity { |user| user.id }
+        subject.timestamp { |user| user.created_at }
+      end
+
+      its( :to_csv ){ should eq( <<-EOS
+Identity;Timestamp;Event
+#{foo.id};#{foo.created_at.to_i};Message Sent
+#{bar.id};#{bar.created_at.to_i};Message Sent
+      EOS
+      ) }
     end
   end
 end
