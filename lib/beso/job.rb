@@ -6,6 +6,7 @@ module Beso
       @props = { }
       @extra = options
     end
+    attr_reader :event
 
     def identity( value=nil, &block )
       @identity = value || block
