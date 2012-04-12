@@ -29,13 +29,21 @@ module Beso
 
       @since ||= options.delete :since
 
+      relation = model_class.where( "#{@timestamp} >= ?", @since || first_timestamp )
+
+      return nil if relation.empty?
+
       Beso::CSV.generate( @extra.merge( options ) ) do |csv|
         csv << ( required_headers + custom_headers )
 
-        model_class.where( "#{@timestamp} > ?", @since || 0 ).each do |model|
+        relation.each do |model|
           csv << ( required_columns( model ) + custom_columns( model ) )
         end
       end
+    end
+
+    def first_timestamp
+      model_class.minimum @timestamp
     end
 
     def last_timestamp

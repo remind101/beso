@@ -11,12 +11,16 @@ module Beso
         @aws_region  = options.delete( :aws_region  )
       end
 
+      def get( filename )
+        bucket.files.get filename
+      end
+
       def read( filename )
-        bucket.files.get( filename ).try( :body ) || ''
+        get( filename ).try( :read ) || ''
       end
 
       def write( filename, body )
-        if file = read( filename )
+        if file = get( filename )
           file.body = body
           file.save
         else
@@ -51,15 +55,10 @@ module Beso
     module ClassMethods
 
       def connect( &block )
-        aws = AWS.new :access_key => Beso.access_key,
-                      :secret_key => Beso.secret_key,
-                      :aws_region => Beso.aws_region
-
-        aws.connect!
-
-        puts '==> connect'
-        puts con.inspect
-        puts con.methods.sort - Object.methods
+        yield AWS.new :access_key  => Beso.access_key,
+                      :secret_key  => Beso.secret_key,
+                      :bucket_name => Beso.bucket_name,
+                      :aws_region  => Beso.aws_region
       end
     end
   end

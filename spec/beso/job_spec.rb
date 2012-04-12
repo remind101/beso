@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Beso::Job do
 
-  after do
+  before do
     User.destroy_all
   end
 
@@ -156,6 +156,18 @@ Identity;Timestamp;Event
 #{bar.id};#{bar.created_at.to_i};Message Sent
       EOS
       ) }
+    end
+
+    context 'when no records match the query' do
+      subject { Beso::Job.new :message_sent, :table => :users }
+
+      before do
+        User.destroy_all
+        subject.identity { |user| user.id }
+        subject.timestamp :created_at
+      end
+
+      its( :to_csv ){ should be_nil }
     end
   end
 
