@@ -19,6 +19,8 @@ module Beso
           @@start_time
         elsif defined? BESO_START_TIME
           BESO_START_TIME.to_i
+        elsif Beso.jobs.any?
+          @@start_time = ( Beso.jobs.count ).hours.ago.to_i
         else
           @@start_time = 1.hour.ago.to_i
         end

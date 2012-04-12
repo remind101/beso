@@ -24,6 +24,19 @@ describe Beso do
       it { should eq( 1.hour.ago.to_i ) }
     end
 
+    context 'when jobs have been defined' do
+      it 'should be 1 hour per job' do
+        [ :foo, :bar, :baz ].each do |name|
+          Beso.job name, :table => :users do
+            identity { |user| user.id }
+            timestamp { |user| user.created_at }
+          end
+        end
+
+        Beso.start_time.should eq( 3.hours.ago.to_i )
+      end
+    end
+
     context 'when ENV["BESO_START_TIME"] is set' do
       around do |example|
         with_const( :BESO_START_TIME, 2.hours.ago.to_i ) do
