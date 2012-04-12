@@ -65,7 +65,14 @@ module Beso
     end
 
     def block_or_value( value, model )
-      value.respond_to?( :call ) ? value.call( model ) : value
+      case value
+      when Symbol
+        model.send value
+      when Proc
+        value.call model
+      else
+        value
+      end
     end
   end
 end

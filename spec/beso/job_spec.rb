@@ -74,6 +74,20 @@ Identity,Timestamp,Event,Prop:Foo
       ) }
     end
 
+    context 'with symbol properties defined' do
+      before do
+        subject.identity :id
+        subject.timestamp :created_at
+      end
+
+      its( :to_csv ){ should eq( <<-EOS
+Identity,Timestamp,Event
+#{foo.id},#{foo.created_at.to_i},Message Sent
+#{bar.id},#{bar.created_at.to_i},Message Sent
+      EOS
+      ) }
+    end
+
     context 'with 10 custom properties defined' do
       before do
         subject.identity 22
