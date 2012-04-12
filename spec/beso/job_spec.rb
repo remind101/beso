@@ -59,7 +59,7 @@ Identity,Timestamp,Event,Prop:Name
 #{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name.length}
 #{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name.length}
       EOS
-      )}
+      ) }
     end
 
     context 'with a custom property with a custom title and a block' do
@@ -74,7 +74,7 @@ Identity,Timestamp,Event,Prop:Name Length
 #{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name.length}
 #{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name.length}
       EOS
-      )}
+      ) }
     end
   end
 

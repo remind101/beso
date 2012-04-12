@@ -53,7 +53,11 @@ describe Beso do
     subject { Beso }
 
     before do
-      subject.job :foo, :table => :users
+      yielded = nil
+      subject.job :foo, :table => :users do
+        yielded = self
+      end
+      yielded.should be_a( Beso::Job )
     end
 
     it { should have( 1 ).jobs }

@@ -21,8 +21,10 @@ module Beso
         @start_time = value
       end
 
-      def job( name, options )
-        jobs << Job.new( name, options )
+      def job( name, options, &block )
+        job = Job.new( name, options )
+        job.instance_eval &block if block_given?
+        jobs << job
       end
 
       def jobs
