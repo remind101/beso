@@ -11,6 +11,7 @@ namespace :beso do
 
       puts '==> Connected!'
 
+      prefix = ENV[ 'BESO_PREFIX' ] || 'beso'
       config = YAML.load( bucket.read 'beso.yml' ) || { }
 
       puts '==> Config:'
@@ -18,14 +19,14 @@ namespace :beso do
 
       Beso.jobs.each do |job|
 
-        puts "==> Processing job: #{job.event.inspect} since #{config[ job.event ]}"
-
         config[ job.event ] ||= job.first_timestamp
+
+        puts "==> Processing job: #{job.event.inspect} since #{config[ job.event ]}"
 
         csv = job.to_csv :since => config[ job.event ]
 
         if csv
-          filename = "beso-#{job.event}-#{config[ job.event ].to_i}.csv"
+          filename = "#{prefix}-#{job.event}-#{config[ job.event ].to_i}.csv"
 
           bucket.write filename, csv
 
@@ -35,7 +36,7 @@ namespace :beso do
 
           puts " ==> New timestamp is #{config[ job.event ]}"
         else
-          puts " ==> No records found. Skipping..."
+          puts " ==> No records found since #{config[ job.event ]}. Skipping..."
         end
       end
 
