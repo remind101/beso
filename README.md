@@ -2,6 +2,8 @@
 
 Sync your historical events to KISSmetrics via CSV.
 
+http://support.kissmetrics.com/integrations/csv-import/recurring-import
+
 ## Installation
 
 Add this line to your application's Gemfile:
