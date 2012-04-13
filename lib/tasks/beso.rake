@@ -19,7 +19,16 @@ namespace :beso do
 
       Beso.jobs.each do |job|
 
-        config[ job.event ] ||= job.first_timestamp
+        config[ job.event ] ||= begin
+          case ENV[ 'BESO_ORIGIN' ]
+          when 'first'
+            job.first_timestamp
+          when 'now'
+            Time.now
+          else
+            job.last_timestamp
+          end
+        end
 
         puts "==> Processing job: #{job.event.inspect} since #{config[ job.event ]}"
 
