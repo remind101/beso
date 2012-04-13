@@ -2,8 +2,9 @@ module Beso
   class Job
     def initialize( event, options )
       @event = event.to_sym
-      @table = options.delete :table
-      @since = options.delete :since
+      @title = options.delete( :event ) || @event.to_s.titleize
+      @table = options.delete( :table )
+      @since = options.delete( :since )
       @props = { }
       @extra = options
     end
@@ -64,16 +65,12 @@ module Beso
       [ ].tap do |row|
         row << block_or_value( @identity,  model )
         row << model.send( @timestamp ).to_i
-        row << event_title
+        row << @title
       end
     end
 
     def custom_columns( model )
       @props.values.map { |value| block_or_value( value, model ) }
-    end
-
-    def event_title
-      @event.to_s.titleize
     end
 
     def model_class

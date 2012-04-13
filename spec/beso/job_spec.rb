@@ -253,6 +253,23 @@ Identity,Timestamp,Event
     end
   end
 
+  describe 'custom event names' do
+    let!( :foo ){ User.create :name => 'Foo' }
+
+    subject { Beso::Job.new :message_sent, :table => :users, :event => 'Messages Sent Action' }
+
+    before do
+      subject.identity :id
+      subject.timestamp :created_at
+    end
+
+    its( :to_csv ){ should eq( <<-EOS
+Identity,Timestamp,Event
+#{foo.id},#{foo.updated_at.to_i},Messages Sent Action
+    EOS
+    ) }
+  end
+
   describe '#last_timestamp' do
     let!( :foo ){ User.create :name => 'Foo', :created_at => 100, :updated_at => 301 }
     let!( :bar ){ User.create :name => 'Bar', :created_at => 200, :updated_at => 200 }
