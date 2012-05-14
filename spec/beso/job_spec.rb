@@ -297,4 +297,47 @@ Identity,Timestamp,Event
       its( :last_timestamp ){ should eq( 301 ) }
     end
   end
+
+  describe 'scopes' do
+    let!( :foo ){ User.create :name => 'Foo', :created_at => 100, :updated_at => 301 }
+    let!( :bar ){ User.create :name => 'Bar', :created_at => 200, :updated_at => 200 }
+    let!( :baz ){ User.create :name => 'Baz', :created_at => 300, :updated_at => 300, :deleted_at => 400 }
+
+    context 'when no explicit scope is given' do
+      subject { Beso::Job.new :message_sent, :table => :users }
+
+      before do
+        subject.identity :id
+        subject.timestamp :updated_at
+      end
+
+      it 'should use the default scope' do
+        subject.to_csv.should eq( <<-EOS
+Identity,Timestamp,Event
+#{foo.id},#{foo.updated_at.to_i},Message Sent
+#{bar.id},#{bar.updated_at.to_i},Message Sent
+        EOS
+        )
+      end
+    end
+
+    context 'overriding the default scope' do
+      subject { Beso::Job.new :message_sent, :table => :users, :scope => lambda { unscoped } }
+
+      before do
+        subject.identity :id
+        subject.timestamp :updated_at
+      end
+
+      it 'should use the default scope' do
+        subject.to_csv.should eq( <<-EOS
+Identity,Timestamp,Event
+#{foo.id},#{foo.updated_at.to_i},Message Sent
+#{bar.id},#{bar.updated_at.to_i},Message Sent
+#{baz.id},#{baz.updated_at.to_i},Message Sent
+        EOS
+        )
+      end
+    end
+  end
 end
