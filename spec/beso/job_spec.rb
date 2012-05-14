@@ -42,8 +42,9 @@ describe Beso::Job do
 
       its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event
-#{foo.id},#{foo.created_at.to_i},Message Sent
-#{bar.id},#{bar.created_at.to_i},Message Sent
+1,100,Message Sent
+2,200,Message Sent
+3,300,Message Sent
       EOS
       ) }
     end
@@ -57,8 +58,9 @@ Identity,Timestamp,Event
 
       its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event,Prop:User Name
-#{foo.id},#{foo.created_at.to_i},Message Sent,Foo
-#{bar.id},#{bar.created_at.to_i},Message Sent,Bar
+1,100,Message Sent,Foo
+2,200,Message Sent,Bar
+3,300,Message Sent,Baz
       EOS
       ) }
     end
@@ -72,8 +74,9 @@ Identity,Timestamp,Event,Prop:User Name
 
       its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event,Prop:Foo
-22,#{foo.created_at.to_i},Message Sent,bar
-22,#{bar.created_at.to_i},Message Sent,bar
+22,100,Message Sent,bar
+22,200,Message Sent,bar
+22,300,Message Sent,bar
       EOS
       ) }
     end
@@ -87,8 +90,9 @@ Identity,Timestamp,Event,Prop:Foo
 
       its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event,Prop:Name
-#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name}
-#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name}
+1,100,Message Sent,Foo
+2,200,Message Sent,Bar
+3,300,Message Sent,Baz
       EOS
       ) }
     end
@@ -104,8 +108,9 @@ Identity,Timestamp,Event,Prop:Name
 
       its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,Prop:Foo 6,Prop:Foo 7,Prop:Foo 8,Prop:Foo 9,Prop:Foo 10
-22,#{foo.created_at.to_i},Message Sent,1,2,3,4,5,6,7,8,9,10
-22,#{bar.created_at.to_i},Message Sent,1,2,3,4,5,6,7,8,9,10
+22,100,Message Sent,1,2,3,4,5,6,7,8,9,10
+22,200,Message Sent,1,2,3,4,5,6,7,8,9,10
+22,300,Message Sent,1,2,3,4,5,6,7,8,9,10
       EOS
       ) }
     end
@@ -133,8 +138,9 @@ Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,
       it 'should support all options that CSV supports' do
         subject.to_csv( :force_quotes => true, :col_sep => ';' ).should eq( <<-EOS
 "Identity";"Timestamp";"Event"
-"#{foo.id}";"#{foo.created_at.to_i}";"Message Sent"
-"#{bar.id}";"#{bar.created_at.to_i}";"Message Sent"
+"1";"100";"Message Sent"
+"2";"200";"Message Sent"
+"3";"300";"Message Sent"
         EOS
         )
       end
@@ -150,8 +156,9 @@ Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,
 
       its( :to_csv ){ should eq( <<-EOS
 Identity;Timestamp;Event
-#{foo.id};#{foo.created_at.to_i};Message Sent
-#{bar.id};#{bar.created_at.to_i};Message Sent
+1;100;Message Sent
+2;200;Message Sent
+3;300;Message Sent
       EOS
       ) }
     end
@@ -182,8 +189,8 @@ Identity;Timestamp;Event
 
         its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event
-#{bar.id},#{bar.created_at.to_i},Message Sent
-#{baz.id},#{baz.created_at.to_i},Message Sent
+2,200,Message Sent
+3,300,Message Sent
         EOS
         ) }
       end
@@ -201,8 +208,8 @@ Identity,Timestamp,Event
         it 'should find records after `since`' do
           subject.to_csv( :since => 101 ).should eq( <<-EOS
 Identity,Timestamp,Event
-#{bar.id},#{bar.created_at.to_i},Message Sent
-#{baz.id},#{baz.created_at.to_i},Message Sent
+2,200,Message Sent
+3,300,Message Sent
           EOS
           )
         end
@@ -220,8 +227,8 @@ Identity,Timestamp,Event
 
         its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event
-#{foo.id},#{foo.updated_at.to_i},Message Sent
-#{baz.id},#{baz.updated_at.to_i},Message Sent
+1,301,Message Sent
+3,300,Message Sent
         EOS
         ) }
       end
@@ -239,8 +246,8 @@ Identity,Timestamp,Event
         it 'should find records after `since`' do
           subject.to_csv( :since => 201 ).should eq( <<-EOS
 Identity,Timestamp,Event
-#{foo.id},#{foo.updated_at.to_i},Message Sent
-#{baz.id},#{baz.updated_at.to_i},Message Sent
+1,301,Message Sent
+3,300,Message Sent
           EOS
           )
         end
@@ -249,8 +256,6 @@ Identity,Timestamp,Event
   end
 
   describe 'custom event names' do
-    let!( :foo ){ User.create :name => 'Foo' }
-
     subject { Beso::Job.new :message_sent, :table => :users, :event => 'Messages Sent Action' }
 
     before do
@@ -260,7 +265,9 @@ Identity,Timestamp,Event
 
     its( :to_csv ){ should eq( <<-EOS
 Identity,Timestamp,Event
-#{foo.id},#{foo.updated_at.to_i},Messages Sent Action
+1,100,Messages Sent Action
+2,200,Messages Sent Action
+3,300,Messages Sent Action
     EOS
     ) }
   end

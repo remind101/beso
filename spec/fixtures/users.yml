@@ -2,7 +2,7 @@ foo:
   id: 1
   name: Foo
   created_at: 100
-  updated_at: 300
+  updated_at: 301
 bar:
   id: 2
   name: Bar
