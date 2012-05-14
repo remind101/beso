@@ -1,16 +1,14 @@
 require 'spec_helper'
 
 describe Beso::Job do
+  fixtures :all
 
-  before do
-    User.destroy_all
-  end
+  let!( :foo ){ users( :foo ) }
+  let!( :bar ){ users( :bar ) }
+  let!( :baz ){ users( :baz ) }
 
   describe 'to_csv' do
     subject { Beso::Job.new :message_sent, :table => :users }
-
-    let!( :foo ){ User.create! :name => 'Foo' }
-    let!( :bar ){ User.create! :name => 'Bar' }
 
     context 'without an identity defined' do
       before do
@@ -42,12 +40,11 @@ describe Beso::Job do
         subject.timestamp :created_at
       end
 
-      its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event
-#{foo.id},#{foo.created_at.to_i},Message Sent
-#{bar.id},#{bar.created_at.to_i},Message Sent
-      EOS
-      ) }
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
+      end
     end
 
     context 'with custom properties defined' do
@@ -57,12 +54,11 @@ Identity,Timestamp,Event
         subject.prop( :user_name ){ |user| user.name }
       end
 
-      its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event,Prop:User Name
-#{foo.id},#{foo.created_at.to_i},Message Sent,Foo
-#{bar.id},#{bar.created_at.to_i},Message Sent,Bar
-      EOS
-      ) }
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
+      end
     end
 
     context 'with literal properties defined' do
@@ -72,12 +68,11 @@ Identity,Timestamp,Event,Prop:User Name
         subject.prop :foo, 'bar'
       end
 
-      its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event,Prop:Foo
-22,#{foo.created_at.to_i},Message Sent,bar
-22,#{bar.created_at.to_i},Message Sent,bar
-      EOS
-      ) }
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
+      end
     end
 
     context 'with symbol properties defined' do
@@ -87,12 +82,11 @@ Identity,Timestamp,Event,Prop:Foo
         subject.prop :name
       end
 
-      its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event,Prop:Name
-#{foo.id},#{foo.created_at.to_i},Message Sent,#{foo.name}
-#{bar.id},#{bar.created_at.to_i},Message Sent,#{bar.name}
-      EOS
-      ) }
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
+      end
     end
 
     context 'with 10 custom properties defined' do
@@ -104,12 +98,11 @@ Identity,Timestamp,Event,Prop:Name
         end
       end
 
-      its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,Prop:Foo 6,Prop:Foo 7,Prop:Foo 8,Prop:Foo 9,Prop:Foo 10
-22,#{foo.created_at.to_i},Message Sent,1,2,3,4,5,6,7,8,9,10
-22,#{bar.created_at.to_i},Message Sent,1,2,3,4,5,6,7,8,9,10
-      EOS
-      ) }
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
+      end
     end
 
     context 'with more than 10 custom properties defined' do
@@ -132,13 +125,10 @@ Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,
         subject.timestamp :created_at
       end
 
-      it 'should support all options that CSV supports' do
-        subject.to_csv( :force_quotes => true, :col_sep => ';' ).should eq( <<-EOS
-"Identity";"Timestamp";"Event"
-"#{foo.id}";"#{foo.created_at.to_i}";"Message Sent"
-"#{bar.id}";"#{bar.created_at.to_i}";"Message Sent"
-        EOS
-        )
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv :force_quotes => true, :col_sep => ';'
+        end
       end
     end
 
@@ -150,12 +140,11 @@ Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,
         subject.timestamp :created_at
       end
 
-      its( :to_csv ){ should eq( <<-EOS
-Identity;Timestamp;Event
-#{foo.id};#{foo.created_at.to_i};Message Sent
-#{bar.id};#{bar.created_at.to_i};Message Sent
-      EOS
-      ) }
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
+      end
     end
 
     context 'when no records match the query' do
@@ -172,9 +161,6 @@ Identity;Timestamp;Event
   end
 
   describe 'with since specified' do
-    let!( :foo ){ User.create :name => 'Foo', :created_at => 100, :updated_at => 300 }
-    let!( :bar ){ User.create :name => 'Bar', :created_at => 200, :updated_at => 200 }
-    let!( :baz ){ User.create :name => 'Baz', :created_at => 300, :updated_at => 300 }
 
     context 'in the constructor' do
       context 'and the timestamp keyed on `created_at`' do
@@ -185,12 +171,11 @@ Identity;Timestamp;Event
           subject.timestamp :created_at
         end
 
-        its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event
-#{bar.id},#{bar.created_at.to_i},Message Sent
-#{baz.id},#{baz.created_at.to_i},Message Sent
-        EOS
-        ) }
+        it 'should generate the correct to_csv' do
+          verify do
+            subject.to_csv
+          end
+        end
       end
     end
 
@@ -203,13 +188,10 @@ Identity,Timestamp,Event
           subject.timestamp :created_at
         end
 
-        it 'should find records after `since`' do
-          subject.to_csv( :since => 101 ).should eq( <<-EOS
-Identity,Timestamp,Event
-#{bar.id},#{bar.created_at.to_i},Message Sent
-#{baz.id},#{baz.created_at.to_i},Message Sent
-          EOS
-          )
+        it 'should generate the correct to_csv' do
+          verify do
+            subject.to_csv :since => 101
+          end
         end
       end
     end
@@ -223,12 +205,11 @@ Identity,Timestamp,Event
           subject.timestamp :updated_at
         end
 
-        its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event
-#{foo.id},#{foo.updated_at.to_i},Message Sent
-#{baz.id},#{baz.updated_at.to_i},Message Sent
-        EOS
-        ) }
+        it 'should generate the correct to_csv' do
+          verify do
+            subject.to_csv
+          end
+        end
       end
     end
 
@@ -241,21 +222,16 @@ Identity,Timestamp,Event
           subject.timestamp :updated_at
         end
 
-        it 'should find records after `since`' do
-          subject.to_csv( :since => 201 ).should eq( <<-EOS
-Identity,Timestamp,Event
-#{foo.id},#{foo.updated_at.to_i},Message Sent
-#{baz.id},#{baz.updated_at.to_i},Message Sent
-          EOS
-          )
+        it 'should generate the correct to_csv' do
+          verify do
+            subject.to_csv :since => 201
+          end
         end
       end
     end
   end
 
   describe 'custom event names' do
-    let!( :foo ){ User.create :name => 'Foo' }
-
     subject { Beso::Job.new :message_sent, :table => :users, :event => 'Messages Sent Action' }
 
     before do
@@ -263,18 +239,14 @@ Identity,Timestamp,Event
       subject.timestamp :created_at
     end
 
-    its( :to_csv ){ should eq( <<-EOS
-Identity,Timestamp,Event
-#{foo.id},#{foo.updated_at.to_i},Messages Sent Action
-    EOS
-    ) }
+    it 'should generate the correct to_csv' do
+      verify do
+        subject.to_csv
+      end
+    end
   end
 
   describe '#last_timestamp' do
-    let!( :foo ){ User.create :name => 'Foo', :created_at => 100, :updated_at => 301 }
-    let!( :bar ){ User.create :name => 'Bar', :created_at => 200, :updated_at => 200 }
-    let!( :baz ){ User.create :name => 'Baz', :created_at => 300, :updated_at => 300 }
-
     subject { Beso::Job.new :message_sent, :table => :users }
 
     before do

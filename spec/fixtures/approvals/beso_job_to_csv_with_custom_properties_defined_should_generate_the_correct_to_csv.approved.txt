@@ -1,0 +1,4 @@
+Identity,Timestamp,Event,Prop:User Name
+1,100,Message Sent,Foo
+2,200,Message Sent,Bar
+3,300,Message Sent,Baz

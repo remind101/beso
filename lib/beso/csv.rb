@@ -9,11 +9,17 @@ module Beso
       protected
 
       def csv
-        @csv ||= if require 'csv'
-          ::CSV
-        else
-          require 'fastercsv'
-          FasterCSV
+        @csv ||= Object.const_get( :CSV ) || begin
+          if require 'csv'
+            ::CSV
+          else
+            begin
+              require 'fastercsv'
+              FasterCSV
+            rescue
+              raise "Ruby version #{RUBY_VERSION} users need to require 'fastercsv'"
+            end
+          end
         end
       end
 

@@ -1,0 +1,4 @@
+Identity,Timestamp,Event,Prop:Foo 1,Prop:Foo 2,Prop:Foo 3,Prop:Foo 4,Prop:Foo 5,Prop:Foo 6,Prop:Foo 7,Prop:Foo 8,Prop:Foo 9,Prop:Foo 10
+22,100,Message Sent,1,2,3,4,5,6,7,8,9,10
+22,200,Message Sent,1,2,3,4,5,6,7,8,9,10
+22,300,Message Sent,1,2,3,4,5,6,7,8,9,10
