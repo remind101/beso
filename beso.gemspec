@@ -8,8 +8,9 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Sync your KISSmetrics history, guapo!}
   gem.homepage      = "https://github.com/remind101/beso"
 
-  gem.files         = `git ls-files`.split($\)
+  gem.files         = `git ls-files -x -i *.rb`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "beso"
   gem.require_paths = ["lib"]
   gem.version       = Beso::VERSION
