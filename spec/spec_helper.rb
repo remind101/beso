@@ -9,6 +9,7 @@ Bundler.require
 
 # Boot the rails app
 require 'config/environment'
+require 'rspec/rails'
 
 # Helpers
 module ConstHelper
@@ -26,6 +27,8 @@ RSpec.configure do |config|
   config.color_enabled = true
   # Change the formatter
   config.formatter = :documentation
+  # Change the fixture path
+  config.fixture_path = File.join( File.dirname( __FILE__ ), 'fixtures' )
   # Include helpers
   config.include ConstHelper
   # Reset Beso after each test

@@ -1,16 +1,14 @@
 require 'spec_helper'
 
 describe Beso::Job do
+  fixtures :all
 
-  before do
-    User.destroy_all
-  end
+  let!( :foo ){ users( :foo ) }
+  let!( :bar ){ users( :bar ) }
+  let!( :baz ){ users( :baz ) }
 
   describe 'to_csv' do
     subject { Beso::Job.new :message_sent, :table => :users }
-
-    let!( :foo ){ User.create! :name => 'Foo' }
-    let!( :bar ){ User.create! :name => 'Bar' }
 
     context 'without an identity defined' do
       before do
@@ -172,9 +170,6 @@ Identity;Timestamp;Event
   end
 
   describe 'with since specified' do
-    let!( :foo ){ User.create :name => 'Foo', :created_at => 100, :updated_at => 300 }
-    let!( :bar ){ User.create :name => 'Bar', :created_at => 200, :updated_at => 200 }
-    let!( :baz ){ User.create :name => 'Baz', :created_at => 300, :updated_at => 300 }
 
     context 'in the constructor' do
       context 'and the timestamp keyed on `created_at`' do
@@ -271,10 +266,6 @@ Identity,Timestamp,Event
   end
 
   describe '#last_timestamp' do
-    let!( :foo ){ User.create :name => 'Foo', :created_at => 100, :updated_at => 301 }
-    let!( :bar ){ User.create :name => 'Bar', :created_at => 200, :updated_at => 200 }
-    let!( :baz ){ User.create :name => 'Baz', :created_at => 300, :updated_at => 300 }
-
     subject { Beso::Job.new :message_sent, :table => :users }
 
     before do

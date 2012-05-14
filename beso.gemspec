@@ -16,10 +16,10 @@ Gem::Specification.new do |gem|
   gem.version       = Beso::VERSION
 
   gem.add_dependency 'rails', '>= 3.0.10'
-  gem.add_dependency 'fastercsv', '>= 1.5.4'
+  # gem.add_dependency 'fastercsv', '>= 1.5.4'
   gem.add_dependency 'fog', '>= 1.3.1'
 
   gem.add_development_dependency 'sqlite3'
   gem.add_development_dependency 'appraisal', '>= 0.4.1'
-  gem.add_development_dependency 'rspec', '>= 2.9.0'
+  gem.add_development_dependency 'rspec-rails', '>= 2.10.1'
 end
