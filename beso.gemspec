@@ -21,5 +21,6 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'sqlite3'
   gem.add_development_dependency 'appraisal', '>= 0.4.1'
+  gem.add_development_dependency 'approvals', '>= 0.0.4'
   gem.add_development_dependency 'rspec-rails', '>= 2.10.1'
 end

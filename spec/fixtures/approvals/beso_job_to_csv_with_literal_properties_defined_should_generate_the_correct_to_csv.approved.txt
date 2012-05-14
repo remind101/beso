@@ -1,0 +1,4 @@
+Identity,Timestamp,Event,Prop:Foo
+22,100,Message Sent,bar
+22,200,Message Sent,bar
+22,300,Message Sent,bar

@@ -10,6 +10,8 @@ Bundler.require
 # Boot the rails app
 require 'config/environment'
 require 'rspec/rails'
+require 'approvals'
+require 'approvals/rspec'
 
 # Helpers
 module ConstHelper
