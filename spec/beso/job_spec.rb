@@ -271,10 +271,6 @@ describe Beso::Job do
   end
 
   describe 'scopes' do
-    let!( :foo ){ User.create :name => 'Foo', :created_at => 100, :updated_at => 301 }
-    let!( :bar ){ User.create :name => 'Bar', :created_at => 200, :updated_at => 200 }
-    let!( :baz ){ User.create :name => 'Baz', :created_at => 300, :updated_at => 300, :deleted_at => 400 }
-
     context 'when no explicit scope is given' do
       subject { Beso::Job.new :message_sent, :table => :users }
 
@@ -283,13 +279,10 @@ describe Beso::Job do
         subject.timestamp :updated_at
       end
 
-      it 'should use the default scope' do
-        subject.to_csv.should eq( <<-EOS
-Identity,Timestamp,Event
-#{foo.id},#{foo.updated_at.to_i},Message Sent
-#{bar.id},#{bar.updated_at.to_i},Message Sent
-        EOS
-        )
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
       end
     end
 
@@ -301,14 +294,10 @@ Identity,Timestamp,Event
         subject.timestamp :updated_at
       end
 
-      it 'should use the default scope' do
-        subject.to_csv.should eq( <<-EOS
-Identity,Timestamp,Event
-#{foo.id},#{foo.updated_at.to_i},Message Sent
-#{bar.id},#{bar.updated_at.to_i},Message Sent
-#{baz.id},#{baz.updated_at.to_i},Message Sent
-        EOS
-        )
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
       end
     end
   end
