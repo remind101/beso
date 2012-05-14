@@ -5,8 +5,18 @@ run 'rm -r README.rdoc'
 run 'rm -r vendor'
 
 # Create some models
-generate 'model', 'user name:string'
+generate 'model', 'user name:string deleted_at:datetime'
+
+inject_into_class 'app/models/user.rb', 'User', <<-EOS
+  has_many :messages
+  default_scope where( 'deleted_at is null' )
+EOS
+
 generate 'model', 'message user_id:integer'
+
+inject_into_class 'app/models/message.rb', 'Message', <<-EOS
+  belongs_to :user
+EOS
 
 # Set up the database
 rake 'db:migrate'

@@ -269,4 +269,36 @@ describe Beso::Job do
       its( :last_timestamp ){ should eq( 301 ) }
     end
   end
+
+  describe 'scopes' do
+    context 'when no explicit scope is given' do
+      subject { Beso::Job.new :message_sent, :table => :users }
+
+      before do
+        subject.identity :id
+        subject.timestamp :updated_at
+      end
+
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
+      end
+    end
+
+    context 'overriding the default scope' do
+      subject { Beso::Job.new :message_sent, :table => :users, :scope => lambda { unscoped } }
+
+      before do
+        subject.identity :id
+        subject.timestamp :updated_at
+      end
+
+      it 'should generate the correct to_csv' do
+        verify do
+          subject.to_csv
+        end
+      end
+    end
+  end
 end

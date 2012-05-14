@@ -5,6 +5,7 @@ module Beso
       @title = options.delete( :event ) || @event.to_s.titleize
       @table = options.delete( :table )
       @since = options.delete( :since )
+      @scope = options.delete( :scope ) || lambda { self }
       @props = { }
       @extra = options
     end
@@ -28,9 +29,9 @@ module Beso
       raise MissingIdentityError  if @identity.nil?
       raise MissingTimestampError if @timestamp.nil?
 
-      @since ||= options.delete :since
+      @since ||= options.delete( :since ) || first_timestamp
 
-      relation = model_class.where( "#{@timestamp} >= ?", @since || first_timestamp )
+      relation = model_class.instance_exec( &@scope ).where( "#{@timestamp} >= ?", @since )
 
       return nil if relation.empty?
 

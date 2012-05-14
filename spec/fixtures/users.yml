@@ -13,3 +13,9 @@ baz:
   name: Baz
   created_at: 300
   updated_at: 300
+woo:
+  id: 4
+  name: Woo
+  created_at: 300
+  updated_at: 300
+  deleted_at: 400
