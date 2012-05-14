@@ -31,7 +31,9 @@ module Beso
 
       @since ||= options.delete( :since ) || first_timestamp
 
-      relation = model_class.instance_exec( &@scope ).where( "#{@timestamp} >= ?", @since )
+      condition = "#{@table}.#{@timestamp} >= ?"
+
+      relation = model_class.instance_exec( &@scope ).where( condition, @since )
 
       return nil if relation.empty?
 
