@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Sync your KISSmetrics history, guapo!}
   gem.homepage      = "https://github.com/remind101/beso"
 
-  gem.files         = `git ls-files -x -i *.rb`.split($\)
+  gem.files         = `git ls-files -x -i *.{rb,rake}`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "beso"
