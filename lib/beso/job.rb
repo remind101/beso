@@ -33,7 +33,7 @@ module Beso
 
       condition = "#{@table}.#{@timestamp} >= ?"
 
-      relation = model_class.where( condition, @since ).instance_exec &@scope
+      relation = model_class.instance_exec( &@scope ).where( condition, @since )
 
       return nil if relation.empty?
 
