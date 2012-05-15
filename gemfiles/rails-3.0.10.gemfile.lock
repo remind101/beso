@@ -1,7 +1,7 @@
 PATH
   remote: /Users/jeremyruppel/Git/beso
   specs:
-    beso (0.3.1)
+    beso (0.3.3)
       fog (>= 1.3.1)
       rails (>= 3.0.10)
 
